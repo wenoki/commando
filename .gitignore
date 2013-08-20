@@ -1,0 +1,29 @@
+# Ignore bundler config.
+/.bundle
+
+*.sublime-project
+*.sublime-workspace
+
+*.rbc
+*.sassc
+.sass-cache
+.rvmrc
+/.bundle
+/vendor/bundle
+
+/log/*
+/tmp/*
+/public/system/*
+**.orig
+rerun.txt
+pickle-email-*.html
+.project
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
