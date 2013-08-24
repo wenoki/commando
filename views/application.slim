@@ -14,4 +14,11 @@ html
       $(document).ready ->
         w = $ window
   body
+    h1 = @title[:title]
+    p.info = @title[:info]
     nav
+    .quotes
+      - @title[:quotes].each do |item|
+        p data-time= item[:time]
+          a target= "_blank" href= "https://twitter.com/intent/tweet?original_referer=http%3A%2F%2F#{request.env["REQUEST_URI"]}&text=#{CGI.escape(item[:quote] + " " + @title[:hashtag])}&tw_p=tweetbutton"
+            = item[:quote]
