@@ -10,15 +10,115 @@ html
       body
         margin: 0
         padding: 0
+      header
+        position: fixed
+        left: 0
+        bottom: 0
+        padding: 1em
+        width: 100%
+        background: #999
+        color: #fff
+      nav
+        position: fixed
+        left: 0
+        top: 0
+        width: 12em
+        padding: 1em
+        input
+          display: block
+      #quotes
+        margin: 0 0 0 14em
+        padding: 0 0 15em 0
+        p
+          position: absolute
+          margin: 0 3em 0 0
+          z-index: -1
     coffee:
       $(document).ready ->
-        w = $ window
+        window.interval = 50
+        window.timer = $("#timer")
+        window.play = $("#play")
+        window.pause = $("#pause")
+        window.jump = $("#jump")
+
+        for quote in $("#quotes").children()
+          q = $(quote)
+          offset = formatted_time_to_ms(q.data("time")) / interval + 120
+          q.css "top", offset
+
+        play.click ->
+          start_timer()
+        play.keypress ->
+          start_timer()
+
+        pause.click ->
+          stop_timer()
+        pause.keypress ->
+          stop_timer()
+        pause.hide()
+
+        jump.click ->
+          jump_to()
+        jump.keypress ->
+          jump_to()
+
+      start_timer = ->
+        play.hide()
+        pause.show()
+        timer.attr "disabled", true
+        jump.attr "disabled", true
+        window.ticker = setInterval ->
+          tick()
+        , interval
+
+      stop_timer = ->
+        play.show()
+        pause.hide()
+        timer.attr "disabled", false
+        jump.attr "disabled", false
+        clearInterval ticker
+
+      jump_to = ->
+        current_ms = formatted_time_to_ms timer.val()
+        timer.data "ms", current_ms
+        tick()
+
+      tick = ->
+        current_ms = timer.data("ms") + interval
+        timer.data "ms", current_ms
+        timer.val ms_to_formatted_time current_ms
+        $(window).scrollTop timer.data("ms") / interval
+
+      formatted_time_to_ms = (formatted_time) ->
+        hour = parseInt formatted_time.substr 0, 2
+        minute = parseInt formatted_time.substr 3, 2
+        second = parseInt formatted_time.substr 6, 2
+        (hour * 3600 + minute * 60 + second) * 1000
+
+      ms_to_formatted_time = (ms) ->
+        s = parseInt ms / 1000
+        hour = parseInt s / 3600
+        minute = parseInt (s % 3600) / 60
+        second = parseInt (s % 3600) % 60
+        [hour.align(2), minute.align(2), second.align(2)].join ":"
+
+      Number.prototype.align = (num) ->
+        "0".repeat(num - this.toString().length) + this.toString()
+
+      String.prototype.repeat = (num) ->
+         new Array(num + 1).join this
+
   body
-    h1 = @title[:title]
-    p.info = @title[:info]
+    header
+      h1 = @title[:title]
+      p.info = @title[:info]
     nav
-    .quotes
+      input#play type= "button" value= "Play"
+      input#pause type= "button" value= "Pause"
+      input#jump type= "button" value= "Jump to"
+      input#timer type= "text" data-ms= 0 value= "00:00:00"
+    #quotes
       - @title[:quotes].each do |item|
         p data-time= item[:time]
-          a target= "_blank" href= "https://twitter.com/intent/tweet?original_referer=http%3A%2F%2F#{request.env["REQUEST_URI"]}&text=#{CGI.escape(item[:quote] + " " + @title[:hashtag])}&tw_p=tweetbutton"
+          a target= "_blank" href= "https://twitter.com/intent/tweet?original_referer=#{CGI.escape request.env["REQUEST_URI"]}&text=#{CGI.escape(item[:quote] + " " + @title[:hashtag])}&tw_p=tweetbutton"
             = item[:quote]
