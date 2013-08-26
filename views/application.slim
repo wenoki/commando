@@ -38,58 +38,68 @@ html
     coffee:
       $(document).ready ->
         window.interval = 50
-        window.timer = $("#timer")
-        window.play = $("#play")
-        window.pause = $("#pause")
-        window.jump = $("#jump")
+        window.offset = 120
+
+        window.timer = $ "#timer"
+        window.play = $ "#play"
+        window.pause = $ "#pause"
+        window.jump = $ "#jump"
+
+        window.w = $ window
 
         for quote in $("#quotes").children()
-          q = $(quote)
-          offset = formatted_time_to_ms(q.data("time")) / interval + 120
-          q.css "top", offset
+          q = $ quote
+          top = formatted_time_to_ms(q.data("time")) / interval + offset
+          q.css "top", top
 
-        play.click ->
-          start_timer()
-        play.keypress ->
-          start_timer()
+        play.click start_timer
+        play.keypress start_timer
 
-        pause.click ->
-          stop_timer()
-        pause.keypress ->
-          stop_timer()
+        pause.click stop_timer
+        pause.keypress stop_timer
         pause.hide()
 
-        jump.click ->
-          jump_to()
-        jump.keypress ->
-          jump_to()
+        jump.click jump_to
+        jump.keypress jump_to
+
+        w.scroll current_scroll_to_time
 
       start_timer = ->
         play.hide()
         pause.show()
         timer.attr "disabled", true
         jump.attr "disabled", true
-        window.ticker = setInterval ->
-          tick()
-        , interval
+        w.unbind "scroll", current_scroll_to_time
+        window.ticker = setInterval tick, interval
 
       stop_timer = ->
         play.show()
         pause.hide()
         timer.attr "disabled", false
         jump.attr "disabled", false
+        w.bind "scroll", current_scroll_to_time
         clearInterval ticker
 
       jump_to = ->
         current_ms = formatted_time_to_ms timer.val()
         timer.data "ms", current_ms
-        tick()
+        scroll_to_current_time()
 
       tick = ->
         current_ms = timer.data("ms") + interval
         timer.data "ms", current_ms
-        timer.val ms_to_formatted_time current_ms
-        $(window).scrollTop timer.data("ms") / interval
+        update_time_display()
+        scroll_to_current_time()
+
+      scroll_to_current_time = ->
+        w.scrollTop timer.data("ms") / interval
+
+      update_time_display = ->
+        timer.val ms_to_formatted_time timer.data "ms"
+
+      current_scroll_to_time = ->
+        timer.data "ms", w.scrollTop() * interval
+        update_time_display()
 
       formatted_time_to_ms = (formatted_time) ->
         hour = parseInt formatted_time.substr 0, 2
@@ -109,7 +119,6 @@ html
 
       String.prototype.repeat = (num) ->
          new Array(num + 1).join this
-
   body
     header
       h1 = @title[:title]
