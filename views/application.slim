@@ -35,6 +35,8 @@ html
           position: absolute
           margin: 0 3em 0 0
           z-index: -1
+          &:last-child
+            padding-bottom: 300px
     coffee:
       $(document).ready ->
         window.interval = 50
@@ -50,7 +52,7 @@ html
         for quote in $("#quotes").children()
           q = $ quote
           top = formatted_time_to_ms(q.data("time")) / interval + offset
-          q.css "top", top
+          q.css "top", top + "px"
 
         play.click start_timer
         play.keypress start_timer
