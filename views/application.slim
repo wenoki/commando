@@ -51,7 +51,7 @@ html
 
         for quote in $("#quotes").children()
           q = $ quote
-          top = formatted_time_to_ms(q.data("time")) / interval + offset
+          top = formatted_time_to_ms(q.data "time") / interval + offset
           q.css "top", top + "px"
 
         play.click start_timer
@@ -59,12 +59,11 @@ html
 
         pause.click stop_timer
         pause.keypress stop_timer
-        pause.hide()
 
         jump.click jump_to
         jump.keypress jump_to
 
-        w.scroll current_scroll_to_time
+        stop_timer()
 
       start_timer = ->
         play.hide()
