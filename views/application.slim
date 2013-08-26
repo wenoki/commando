@@ -24,6 +24,8 @@ html
         top: 0
         width: 12em
         padding: 1em
+        p
+          font-size: 80%
         input
           display: block
       #quotes
@@ -113,6 +115,9 @@ html
       h1 = @title[:title]
       p.info = @title[:info]
     nav
+      p
+        a href= "/"
+          | コマンドー実況支援（仮）
       input#play type= "button" value= "Play"
       input#pause type= "button" value= "Pause"
       input#jump type= "button" value= "Jump to"
