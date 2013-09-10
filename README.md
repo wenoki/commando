@@ -1,4 +1,4 @@
-commando
+yamerobot
 ===========
 
-[コマンドー実況支援（仮）](http://commando.dec31.net/)
+[やめろbot](https://twitter.com/yamerobot)
